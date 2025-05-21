@@ -8,3 +8,4 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 Makefile
 build/
+old_file.cpp
