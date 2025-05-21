@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
+project(raylib_cpp_example)
 
-# Set the project name. This is not the executable program's name!
-project(graphical_template)
-
-# This code downloads raylib into a directory called _deps and adds it as a subdirectory, compiling it with the program when running the build command
+# raylib
 include(FetchContent)
 FetchContent_Declare(
     raylib
@@ -12,20 +10,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(raylib)
 
-# We don't want raylib's examples built. This option is picked up by raylib's CMakeLists.txt
-set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-
-# Here, the executable is declared with its sources. "main", or "main.exe" on windows will be the program's name
-add_executable(main "main.c")
-
-# Link raylib to main
-target_link_libraries(main 
-    raylib
+# raylib-cpp
+FetchContent_Declare(
+    raylib_cpp
+    GIT_REPOSITORY https://github.com/RobLoach/raylib-cpp.git
+    GIT_TAG v5.5.0
 )
-# Make main find the <raylib.h> header (and others)
-target_include_directories(main PUBLIC "${CMAKE_BINARY_DIR}/_deps/raylib-src/src")
+FetchContent_MakeAvailable(raylib_cpp)
 
-if (EMSCRIPTEN)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lidbfs.js -s USE_GLFW=3 --shell-file ${CMAKE_CURRENT_LIST_DIR}/web/minshell.html --preload-file ${CMAKE_CURRENT_LIST_DIR}/resources/@resources/ -s GL_ENABLE_GET_PROC_ADDRESS=1")
-    set(CMAKE_EXECUTABLE_SUFFIX ".html") # This line is used to set your executable to build with the emscripten html template so that you can directly open it.
-endif ()
+# This is the main part:
+set(SOURCES main.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 11)
+target_link_libraries(${PROJECT_NAME} PUBLIC raylib raylib_cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/_deps/raylib-src/src" "${CMAKE_BINARY_DIR}/_deps/raylib_cpp-src/include")
+
+# That's it! You should have an example executable that you can run. Have fun!
