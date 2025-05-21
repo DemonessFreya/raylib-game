@@ -8,3 +8,4 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 Makefile
 old_file.cpp
+.vscode/
